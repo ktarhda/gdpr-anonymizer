@@ -5,7 +5,9 @@ from ultralytics import YOLO
 print("--- Lancement du script ---")
 print("Chargement du modèle YOLO...")
 
-model = YOLO("yolov8n.pt") 
+# model = YOLO("yolov8n.pt") 
+# new mmodel 
+model = YOLO("yolov8n-face.pt")
 
 video_path = "data/test_video.mp4"
 cap = cv2.VideoCapture(video_path)

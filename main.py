@@ -7,7 +7,7 @@ print("Chargement des modèles YOLO...")
 
 # On charge les DEUX cerveaux 
 model_face = YOLO("yolov8n-face.pt") 
-model_plate = YOLO("yolov8n-plate.pt") 
+model_plate = YOLO("license_plate_detector.pt")
 
 video_path = "data/test_video.mp4"
 cap = cv2.VideoCapture(video_path)

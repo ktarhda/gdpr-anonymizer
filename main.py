@@ -16,13 +16,21 @@ if not cap.isOpened():
     print("Erreur : Impossible d'ouvrir la vidéo.")
     exit()
 
+# --- CONFIGURATION DE L'EXPORT  ---
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 fps = int(cap.get(cv2.CAP_PROP_FPS))
 
+# On calcule les dimensions réduites pour l'exporteur (50%)
+new_width = int(frame_width * 0.5)
+new_height = int(frame_height * 0.5)
+
 output_path = "data/resultat.mp4"
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+
+# On donne les NOUVELLES dimensions à l'exporteur
+out = cv2.VideoWriter(output_path, fourcc, fps, (new_width, new_height))
+# --------------------------------------------
 
 print("Vidéo trouvée. Appuie sur la touche 'q' pour quitter.")
 
@@ -34,6 +42,11 @@ while True:
     if not ret:
         print("Fin de la vidéo.")
         break
+        
+    # --- NOUVELLE ASTUCE D'OPTIMISATION ---
+    # On réduit la taille de l'image de 50% dès son arrivée.
+    # fx=0.5 et fy=0.5 signifient "50% de la largeur" et "50% de la hauteur".
+    frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
         
     # ==========================================
     # 1. DÉTECTION ET FLOUTAGE DES VISAGES
@@ -52,22 +65,34 @@ while True:
             except Exception:
                 pass 
 
+   # ==========================================
+    # 2. DÉTECTION ET FLOUTAGE DES PLAQUES (AVEC PADDING)
     # ==========================================
-    # 2. DÉTECTION ET FLOUTAGE DES PLAQUES
-    # ==========================================
-    results_plates = model_plate(frame, stream=True, verbose=False) 
+    results_plates = model_plate.track(frame, persist=True, stream=True, verbose=False, conf=0.1) 
+    
+    # On définit notre marge de sécurité en pixels
+    padding = 3 
+    
     for r in results_plates:
         for box in r.boxes:
             x1, y1, x2, y2 = box.xyxy[0]
             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
             
+            # --- L'ASTUCE DU PADDING ---
+            # On agrandit la boîte, mais on utilise max() et min() pour s'assurer 
+            # que la boîte agrandie ne sorte pas de l'écran (ce qui ferait planter OpenCV)
+            x1 = max(0, x1 - padding)
+            y1 = max(0, y1 - padding)
+            x2 = min(frame.shape[1], x2 + padding)
+            y2 = min(frame.shape[0], y2 + padding)
+            
             roi = frame[y1:y2, x1:x2] 
             try:
-                # Un flou un peu moins étalé suffit souvent pour les plaques
+                # Flou fort pour bien couvrir la zone élargie
                 blurred_roi = cv2.GaussianBlur(roi, (51, 51), 0) 
                 frame[y1:y2, x1:x2] = blurred_roi
             except Exception:
-                pass 
+                pass
 
     # ==========================================
     # AFFICHAGE ET EXPORT (Inchangé)

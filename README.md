@@ -5,18 +5,21 @@
 ![YOLO](https://img.shields.io/badge/YOLO-v8-yellow.svg)
 
 ## 📌 Présentation du projet
-Dans le cadre de la conformité RGPD (Règlement Général sur la Protection des Données), l'anonymisation des données visuelles est une obligation légale pour la vidéosurveillance et la cartographie publique. 
+Dans le cadre de la conformité RGPD (Règlement Général sur la Protection des Données), l'anonymisation des données visuelles est une obligation légale. 
 
-Ce projet est un outil de **Computer Vision** performant permettant de détecter et de flouter automatiquement les visages et les plaques d'immatriculation sur des flux vidéos ou des images statiques.
+Ce projet est un pipeline de **Computer Vision** optimisé permettant de détecter et de flouter automatiquement les visages et les plaques d'immatriculation sur des flux vidéos, en gérant les problématiques de Tracking et d'optimisation CPU.
 
 ### 🎥 Démonstration
-![Demo du floutage](video.gif)
-
-## 🚀 Fonctionnalités
-- **Détection ultra-rapide** : Utilisation de modèles Deep Learning légers (YOLOv8) pour la détection.
-- **Floutage dynamique** : Application d'un filtre Gaussien sur les zones d'intérêt (ROI) avec OpenCV.
-- **Export vidéo** : Sauvegarde automatique du flux traité tout en conservant la qualité d'origine.
-- **Mesure de performance** : Affichage des FPS en temps réel pour évaluer l'optimisation.
+![Demo du floutage]
+<video src="data/resultat.mp4" controls="controls" width="100%">
+  Ton navigateur ne supporte pas la balise vidéo.
+</video>
+## 🚀 Fonctionnalités Avancées
+- **Architecture Multi-Modèles** : Inférence simultanée de deux modèles YOLOv8 spécialisés (Visages + Plaques).
+- **Tracking d'Objets (ByteTrack)** : Suivi temporel des objets pour éliminer le "flickering" (scintillement) sur les vidéos dynamiques.
+- **Padding Spatial Dynamique** : Élargissement intelligent des zones de floutage (ROI) pour compenser la latence physique liée aux véhicules rapides.
+- **Optimisation CPU (Downscaling)** : Réduction matricielle du flux d'entrée (`cv2.resize`) permettant d'augmenter drastiquement les FPS sur des machines dépourvues de GPU puissant.
+- **Export vidéo automatisé** : Recomposition du flux traité avec le codec `mp4v` adapté aux nouvelles dimensions.
 
 ## 🛠️ Stack Technique
 - **Langage :** Python

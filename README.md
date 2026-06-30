@@ -10,10 +10,8 @@ Dans le cadre de la conformité RGPD (Règlement Général sur la Protection des
 Ce projet est un pipeline de **Computer Vision** optimisé permettant de détecter et de flouter automatiquement les visages et les plaques d'immatriculation sur des flux vidéos, en gérant les problématiques de Tracking et d'optimisation CPU.
 
 ### 🎥 Démonstration
-![Demo du floutage]
-<video src="data/resultat.mp4" controls="controls" width="100%">
-  Ton navigateur ne supporte pas la balise vidéo.
-</video>
+![Demo du floutage](video.gif)
+
 ## 🚀 Fonctionnalités Avancées
 - **Architecture Multi-Modèles** : Inférence simultanée de deux modèles YOLOv8 spécialisés (Visages + Plaques).
 - **Tracking d'Objets (ByteTrack)** : Suivi temporel des objets pour éliminer le "flickering" (scintillement) sur les vidéos dynamiques.
